@@ -1,41 +1,43 @@
 package dhanar10.ArtificialBeeColony;
 
 public class ArtificialBeeColony {
-
+	public static final int LOWER_BOUND = 0;
+	public static final int UPPER_BOUND = 10;
+	public static final int FOOD_SOURCE = 10;
+	public static final int MAXIMUM_CYCLE_NUMBER = 100;
+	
 	public static void main(String[] args) {
-		double x[][] = new double[10][2];
-		double xfit[] = new double[10];
-		int xlimit[] = new int[10];
+		double x[][] = new double[FOOD_SOURCE][2];
+		int xlimit[] = new int[FOOD_SOURCE];
 		
-		double xbestfit = Double.MIN_VALUE;
 		double xbest[] = new double[2];
 		
-		for (int m = 0; m < x.length; m++) 
-			for (int i = 0; i < x[0].length; i++)
-				x[m][i] = 0 + Math.random() * (10 - 0);
-		
-		for (int mcn = 0; mcn < 100; mcn++) {
-			for (int m = 0; m < x.length; m++) {
-				xfit[m] = 1 / (10 - (x[m][0] + x[m][1]));
+		for (int m = 0; m < x.length; m++) {
+			for (int i = 0; i < x[0].length; i++) {
+				x[m][i] = LOWER_BOUND + Math.random() * (UPPER_BOUND - LOWER_BOUND);
 			}
-			
+		}
+		
+		for (int mcn = 1; mcn <= MAXIMUM_CYCLE_NUMBER; mcn++) {
 			for (int m = 0; m < x.length; m++) {
 				double v[] = new double[2];
-				double vfit = Double.MIN_VALUE;
+				double vfit = 0;
+				double xfit = 0;
 				int k = 0;
 				
 				do {
 					k = (int) Math.round(Math.random() * (x.length - 1));
 				} while (k == m);
 				
-				for (int i = 0; i < x[0].length; i++)
+				for (int i = 0; i < x[0].length; i++) {
 					v[i] = x[m][i] + (Math.random() * 2 - 1) * (x[m][i] - x[k][i]);
+				}
 				
 				vfit = 1 / (10 - (v[0] + v[1]));
+				xfit = 1 / (10 - (x[m][0] + x[m][1])); 
 				
-				if (vfit > xfit[m]) {
+				if (vfit > xfit) {
 					x[m] = v;
-					xfit[m] = vfit;
 				}
 				else {
 					xlimit[m]++;
@@ -43,20 +45,27 @@ public class ArtificialBeeColony {
 			}
 			
 			for (int t = 0; t < x.length; t++) {
-				double xfitmax = Double.MIN_VALUE;
+				double xfitmax = 0;
 				double v[] = new double[2];
-				double vfit = Double.MIN_VALUE;
+				double vfit = 0;
+				double xfit = 0;
 				int m = 0;
 				int k = 0;
 				
-				for (double value : xfit)
-					if (value > xfitmax) 
-						xfitmax = value;
+				for (int i = 0; i < x.length; i++) {
+					xfit = 1 / (10 - (x[i][0] + x[i][1])); 
+					
+					if (xfit > xfitmax) {
+						xfitmax = xfit;
+					}
+				}
 				
-				while (true){
+				while (true) {
 					m = (int) (Math.random() * x.length);
 					
-					if (Math.random() < xfit[m] / xfitmax)
+					xfit = 1 / (10 - (x[m][0] + x[m][1])); 
+					
+					if (Math.random() < xfit / xfitmax)
 						break;
 				}
 				
@@ -64,29 +73,39 @@ public class ArtificialBeeColony {
 					k = (int) Math.round(Math.random() * (x.length - 1));
 				} while (k == m);
 				
-				for (int i = 0; i < x[0].length; i++)
+				for (int i = 0; i < x[0].length; i++) {
 					v[i] = x[m][i] + (Math.random() * 2 - 1) * (x[m][i] - x[k][i]);
+				}
 				
 				vfit = 1 / (10 - (v[0] + v[1]));
+				xfit = 1 / (10 - (x[m][0] + x[m][1])); 
 				
-				if (vfit > xfit[m]) {
+				if (vfit > xfit) {
 					x[m] = v;
-					xfit[m] = vfit;
 				}
 			}
 			
-			for (int m = 0; m < x.length; m++)
-				if (xlimit[m] > 10 * 2)
-					for (int i = 0; i < x[0].length; i++)
-						x[m][i] = 0 + Math.random() * (10 - 0);
-			
-			for (int m = 0; m < x.length; m++)
-				if (xfit[m] > xbestfit) {
-					xbestfit = xfit[m];
-					xbest = x[m];
+			for (int m = 0; m < x.length; m++) {
+				if (xlimit[m] > FOOD_SOURCE * 2) {
+					for (int i = 0; i < x[0].length; i++) {
+						x[m][i] = LOWER_BOUND + Math.random() * (UPPER_BOUND - LOWER_BOUND);
+					}
 				}
+			}
 			
-			System.out.println(xbest[0] + " " + xbest[1] + " " + (xbest[0] + xbest[1]) + " " + xbestfit + " " + 1 / (10 - (xbest[0] + xbest[1])));
+			for (int m = 0; m < x.length; m++) {
+				double xfit = 0;
+				double xbestfit = 0;
+				
+				xfit = 1 / (10 - (x[m][0] + x[m][1]));
+				xbestfit = 1 / (10 - (xbest[0] + xbest[1])); 
+				
+				if (xfit > xbestfit) {
+					xbest = x[m].clone();
+				}
+			}
+			
+			System.out.println(mcn + "\t" + (xbest[0] + xbest[1]) + "\t" + 1 / (10 - (xbest[0] + xbest[1])));
 		}
 	}
 	

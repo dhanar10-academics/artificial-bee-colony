@@ -1,28 +1,60 @@
 package dhanar10.ArtificialBeeColony;
 
 public class ArtificialBeeColony {
-	public static final int LOWER_BOUND = 0;
-	public static final int UPPER_BOUND = 10;
-	public static final int FOOD_SOURCE = 10;
-	public static final int MAXIMUM_CYCLE_NUMBER = 100;
+	private IOptimizationProblem optimizationProblem;
+	private double[] bestSolution;
 	
 	public static void main(String[] args) {
-		double x[][] = new double[FOOD_SOURCE][2];
-		int xlimit[] = new int[FOOD_SOURCE];
+		IOptimizationProblem optimizationProblem = new IOptimizationProblem() {
+			public int length() {
+				return 2;
+			}
+			public double[] upperBound() {
+				return new double[] {4, 7};
+			}
+			public double[] lowerBound() {
+				return new double[] {0, 0};
+			}
+			public double getOutput(double x[]) {
+				return x[0] + x[1];
+			}
+			public double getFitness(double x[]) {
+				return 1 / (10 - this.getOutput(x)); // x[0] + x[1] = 10
+			}
+		};
 		
-		double xbest[] = new double[2];
+		ArtificialBeeColony abc = new ArtificialBeeColony(optimizationProblem);
+		abc.optimize(10, 100);
+		
+		System.out.println();
+		
+		for (int i = 0; i < abc.getBestSolution().length; i++) {
+			System.out.println("x[" + i + "]    = " + abc.getBestSolution()[i]);
+		}
+		
+		System.out.println("Output  = " + optimizationProblem.getOutput(abc.getBestSolution()));
+		System.out.println("Fitness = " + optimizationProblem.getFitness(abc.getBestSolution()));
+	}
+	
+	public ArtificialBeeColony(IOptimizationProblem optimizationProblem) {
+		this.optimizationProblem = optimizationProblem;
+	}
+	
+	public void optimize(int foodSource, int maximumCycleNumber) {
+		double x[][] = new double[foodSource][optimizationProblem.length()];
+		int xlimit[] = new int[foodSource];
+		
+		double xbest[] = new double[optimizationProblem.length()];
 		
 		for (int m = 0; m < x.length; m++) {
 			for (int i = 0; i < x[0].length; i++) {
-				x[m][i] = LOWER_BOUND + Math.random() * (UPPER_BOUND - LOWER_BOUND);
+				x[m][i] = optimizationProblem.lowerBound()[i] + Math.random() * (optimizationProblem.upperBound()[i] - optimizationProblem.lowerBound()[i]);
 			}
 		}
 		
-		for (int mcn = 1; mcn <= MAXIMUM_CYCLE_NUMBER; mcn++) {
+		for (int mcn = 1; mcn <= maximumCycleNumber; mcn++) {
 			for (int m = 0; m < x.length; m++) {
-				double v[] = new double[2];
-				double vfit = 0;
-				double xfit = 0;
+				double v[] = new double[optimizationProblem.length()];
 				int k = 0;
 				
 				do {
@@ -33,10 +65,12 @@ public class ArtificialBeeColony {
 					v[i] = x[m][i] + (Math.random() * 2 - 1) * (x[m][i] - x[k][i]);
 				}
 				
-				vfit = 1 / (10 - (v[0] + v[1]));
-				xfit = 1 / (10 - (x[m][0] + x[m][1])); 
+				for (int i = 0; i < x[0].length; i++) {
+					v[i] = v[i] < optimizationProblem.lowerBound()[i] ? optimizationProblem.lowerBound()[i] : v[i];
+					v[i] = v[i] > optimizationProblem.upperBound()[i] ? optimizationProblem.upperBound()[i] : v[i];
+				}
 				
-				if (vfit > xfit) {
+				if (optimizationProblem.getFitness(v) > optimizationProblem.getFitness(x[m])) {
 					x[m] = v;
 				}
 				else {
@@ -46,26 +80,20 @@ public class ArtificialBeeColony {
 			
 			for (int t = 0; t < x.length; t++) {
 				double xfitmax = 0;
-				double v[] = new double[2];
-				double vfit = 0;
-				double xfit = 0;
+				double v[] = new double[optimizationProblem.length()];
 				int m = 0;
 				int k = 0;
 				
 				for (int i = 0; i < x.length; i++) {
-					xfit = 1 / (10 - (x[i][0] + x[i][1])); 
-					
-					if (xfit > xfitmax) {
-						xfitmax = xfit;
+					if (optimizationProblem.getFitness(x[i]) > xfitmax) {
+						xfitmax = optimizationProblem.getFitness(x[i]);
 					}
 				}
 				
 				while (true) {
 					m = (int) (Math.random() * x.length);
 					
-					xfit = 1 / (10 - (x[m][0] + x[m][1])); 
-					
-					if (Math.random() < xfit / xfitmax)
+					if (Math.random() < optimizationProblem.getFitness(x[m]) / xfitmax)
 						break;
 				}
 				
@@ -77,37 +105,37 @@ public class ArtificialBeeColony {
 					v[i] = x[m][i] + (Math.random() * 2 - 1) * (x[m][i] - x[k][i]);
 				}
 				
-				vfit = 1 / (10 - (v[0] + v[1]));
-				xfit = 1 / (10 - (x[m][0] + x[m][1])); 
+				for (int i = 0; i < x[0].length; i++) {
+					v[i] = v[i] < optimizationProblem.lowerBound()[i] ? optimizationProblem.lowerBound()[i] : v[i];
+					v[i] = v[i] > optimizationProblem.upperBound()[i] ? optimizationProblem.upperBound()[i] : v[i];
+				}
 				
-				if (vfit > xfit) {
+				if (optimizationProblem.getFitness(v) > optimizationProblem.getFitness(x[m])) {
 					x[m] = v;
 				}
 			}
 			
 			for (int m = 0; m < x.length; m++) {
-				if (xlimit[m] > FOOD_SOURCE * 2) {
+				if (xlimit[m] > foodSource * 2) {
 					for (int i = 0; i < x[0].length; i++) {
-						x[m][i] = LOWER_BOUND + Math.random() * (UPPER_BOUND - LOWER_BOUND);
+						x[m][i] = optimizationProblem.lowerBound()[i] + Math.random() * (optimizationProblem.upperBound()[i] - optimizationProblem.lowerBound()[i]);
 					}
 				}
 			}
 			
 			for (int m = 0; m < x.length; m++) {
-				double xfit = 0;
-				double xbestfit = 0;
-				
-				xfit = 1 / (10 - (x[m][0] + x[m][1]));
-				xbestfit = 1 / (10 - (xbest[0] + xbest[1])); 
-				
-				if (xfit > xbestfit) {
+				if (optimizationProblem.getFitness(x[m]) > optimizationProblem.getFitness(xbest)) {
 					xbest = x[m].clone();
 				}
 			}
 			
-			System.out.println(mcn + "\t" + (xbest[0] + xbest[1]) + "\t" + 1 / (10 - (xbest[0] + xbest[1])));
+			System.out.println(mcn + "\t" + optimizationProblem.getOutput(xbest) + "\t" + optimizationProblem.getFitness(xbest));
 		}
+		
+		bestSolution = xbest;
 	}
 	
-	
+	public double[] getBestSolution() {
+		return bestSolution;
+	}
 }

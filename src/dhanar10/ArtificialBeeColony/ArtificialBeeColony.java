@@ -1,7 +1,7 @@
 package dhanar10.ArtificialBeeColony;
 
 public class ArtificialBeeColony {
-	private IOptimizationProblem optimizationProblem;
+	private int foodSource;
 	private double[] bestSolution;
 	
 	public static void main(String[] args) {
@@ -23,8 +23,8 @@ public class ArtificialBeeColony {
 			}
 		};
 		
-		ArtificialBeeColony abc = new ArtificialBeeColony(optimizationProblem);
-		abc.optimize(10, 100);
+		ArtificialBeeColony abc = new ArtificialBeeColony(10);
+		abc.optimize(optimizationProblem, 100);
 		
 		System.out.println();
 		
@@ -36,15 +36,16 @@ public class ArtificialBeeColony {
 		System.out.println("Fitness\t= " + optimizationProblem.getFitness(abc.getBestSolution()));
 	}
 	
-	public ArtificialBeeColony(IOptimizationProblem optimizationProblem) {
-		this.optimizationProblem = optimizationProblem;
+	public ArtificialBeeColony(int foodSource) {
+		this.foodSource = foodSource;
 	}
 	
-	public void optimize(int foodSource, int maximumCycleNumber) {
+	public void optimize(IOptimizationProblem optimizationProblem, int maximumCycleNumber) {
 		double x[][] = new double[foodSource][optimizationProblem.length()];
 		int xlimit[] = new int[foodSource];
-		
 		double xbest[] = new double[optimizationProblem.length()];
+		
+		// initialization
 		
 		for (int m = 0; m < x.length; m++) {
 			for (int i = 0; i < x[0].length; i++) {
@@ -54,6 +55,8 @@ public class ArtificialBeeColony {
 		
 		for (int mcn = 1; mcn <= maximumCycleNumber; mcn++) {
 			for (int m = 0; m < x.length; m++) {
+				// employed
+				
 				double v[] = new double[optimizationProblem.length()];
 				int k = 0;
 				
@@ -77,6 +80,8 @@ public class ArtificialBeeColony {
 					xlimit[m]++;
 				}
 			}
+			
+			// onlooker
 			
 			for (int t = 0; t < x.length; t++) {
 				double xfitmax = 0;
@@ -115,6 +120,8 @@ public class ArtificialBeeColony {
 				}
 			}
 			
+			// scout
+			
 			for (int m = 0; m < x.length; m++) {
 				if (xlimit[m] > foodSource * 2) {
 					for (int i = 0; i < x[0].length; i++) {
@@ -122,6 +129,8 @@ public class ArtificialBeeColony {
 					}
 				}
 			}
+			
+			// remember the best solution so far
 			
 			for (int m = 0; m < x.length; m++) {
 				if (optimizationProblem.getFitness(x[m]) > optimizationProblem.getFitness(xbest)) {

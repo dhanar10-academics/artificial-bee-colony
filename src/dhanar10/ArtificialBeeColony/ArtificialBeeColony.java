@@ -29,11 +29,11 @@ public class ArtificialBeeColony {
 		System.out.println();
 		
 		for (int i = 0; i < abc.getBestSolution().length; i++) {
-			System.out.println("x[" + i + "]    = " + abc.getBestSolution()[i]);
+			System.out.println("x[" + i + "]\t= " + abc.getBestSolution()[i]);
 		}
 		
-		System.out.println("Output  = " + optimizationProblem.getOutput(abc.getBestSolution()));
-		System.out.println("Fitness = " + optimizationProblem.getFitness(abc.getBestSolution()));
+		System.out.println("Output\t= " + optimizationProblem.getOutput(abc.getBestSolution()));
+		System.out.println("Fitness\t= " + optimizationProblem.getFitness(abc.getBestSolution()));
 	}
 	
 	public ArtificialBeeColony(IOptimizationProblem optimizationProblem) {

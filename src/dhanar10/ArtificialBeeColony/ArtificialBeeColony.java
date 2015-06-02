@@ -55,6 +55,7 @@ public class ArtificialBeeColony {
 		
 		for (int mcn = 1; mcn <= maximumCycleNumber; mcn++) {
 			for (int m = 0; m < x.length; m++) {
+				
 				// employed
 				
 				double v[] = new double[optimizationProblem.length()];

@@ -1,4 +1,4 @@
-package dhanar10.ArtificialBeeColony;
+package dhanar10.artificialbeecolony;
 
 public interface IOptimizationProblem {
 	public int length();

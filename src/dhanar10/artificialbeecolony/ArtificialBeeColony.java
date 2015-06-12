@@ -1,4 +1,4 @@
-package dhanar10.ArtificialBeeColony;
+package dhanar10.artificialbeecolony;
 
 public class ArtificialBeeColony {
 	private int foodSource;

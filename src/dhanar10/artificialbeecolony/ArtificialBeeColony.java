@@ -57,6 +57,7 @@ public class ArtificialBeeColony {
 		}
 		
 		for (int mcn = 1; mcn <= maximumCycleNumber; mcn++) {
+			// Employed
 			
 			for (int m = 0; m < x.length; m++) {
 				double v[] = new double[problem.length()];
@@ -87,7 +88,7 @@ public class ArtificialBeeColony {
 				}
 			}
 			
-			// onlooker
+			// Onlooker
 			
 			for (int t = 0; t < x.length; t++) {
 				double xfitmax = 0;
@@ -95,6 +96,8 @@ public class ArtificialBeeColony {
 				double vfit = 0;
 				int m = 0;
 				int k = 0;
+				
+				// BEGIN Stochastic Roulette Wheel
 				
 				for (int i = 0; i < x.length; i++) {
 					if (xfit[i] > xfitmax) {
@@ -108,6 +111,8 @@ public class ArtificialBeeColony {
 					if (Math.random() < xfit[m] / xfitmax)
 						break;
 				}
+				
+				// END Stochastic Roulette Wheel
 				
 				do {
 					k = (int) Math.round(Math.random() * (x.length - 1));
@@ -130,7 +135,7 @@ public class ArtificialBeeColony {
 				}
 			}
 			
-			// scout
+			// Scout
 			
 			for (int m = 0; m < x.length; m++) {
 				if (xlimit[m] > foodSource * 2) {
@@ -140,7 +145,7 @@ public class ArtificialBeeColony {
 				}
 			}
 			
-			// remember the best solution so far
+			// Remember the best solution so far
 			
 			for (int m = 0; m < x.length; m++) {
 				if (xfit[m] > xbestfit) {

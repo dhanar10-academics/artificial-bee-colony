@@ -46,7 +46,7 @@ public class ArtificialBeeColony {
 		double xbest[] = new double[problem.length()];
 		double xbestfit = 0;
 		
-		// initialization
+		// Initialization
 		
 		for (int m = 0; m < x.length; m++) {
 			for (int i = 0; i < x[0].length; i++) {
@@ -57,7 +57,7 @@ public class ArtificialBeeColony {
 		}
 		
 		for (int mcn = 1; mcn <= maximumCycleNumber; mcn++) {
-			// Employed
+			// Employed Bee
 			
 			for (int m = 0; m < x.length; m++) {
 				double v[] = new double[problem.length()];
@@ -88,7 +88,7 @@ public class ArtificialBeeColony {
 				}
 			}
 			
-			// Onlooker
+			// Onlooker Bee
 			
 			for (int t = 0; t < x.length; t++) {
 				double xfitmax = 0;
@@ -135,7 +135,7 @@ public class ArtificialBeeColony {
 				}
 			}
 			
-			// Scout
+			// Scout Bee
 			
 			for (int m = 0; m < x.length; m++) {
 				if (xlimit[m] > foodSource * 2) {

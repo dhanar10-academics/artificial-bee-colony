@@ -142,6 +142,8 @@ public class ArtificialBeeColony {
 					for (int i = 0; i < x[0].length; i++) {
 						x[m][i] = problem.lowerBound()[i] + Math.random() * (problem.upperBound()[i] - problem.lowerBound()[i]);
 					}
+					
+					xfit[m] = problem.getFitness(x[m]);
 				}
 			}
 			
